@@ -64,8 +64,17 @@ function getFactorial(n) {
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
 function getSumBetweenNumbers(n1, n2) {
-  const newArray = new Array(n1 - n2 + 1);
-  const newArray2 = newArray.fill().map((element, index) => n1 + index);
+  let start;
+  let end;
+  if (n1 < n2) {
+    start = n1;
+    end = n2;
+  } else {
+    start = n2;
+    end = n1;
+  }
+  const newArray = new Array(end - start + 1);
+  const newArray2 = newArray.fill().map((element, index) => start + index);
   return newArray2.reduce((a, b) => a + b);
 }
 
@@ -170,8 +179,10 @@ function isInsideCircle(/* circle, point */) {
  *   'entente' => null
  */
 function findFirstSingleChar(str) {
-  const unique = Array.from(str);
-  unique.filter((el, index) => unique.indexOf(el) === index);
+  const uniqueArray = str
+    .split('')
+    .filter((char) => str.indexOf(char) === str.lastIndexOf(char));
+  return uniqueArray[0] || null;
 }
 
 /**
@@ -252,8 +263,25 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const ccnArray = Array.from(ccn.toString()).map(Number);
+  const lastDigit = ccnArray.pop();
+  const checkDigits = ccnArray.slice(0, ccnArray.length);
+  const doubleEvenCheckDigits = checkDigits.map((el, ind) => {
+    if (!(ind % 2 === 0)) {
+      return el * 2;
+    }
+    return el;
+  });
+  const sumCheckDigits = doubleEvenCheckDigits.reduce((sum, number) => {
+    if (number > 9) {
+      const digits = Array.from(number.toString()).map(Number);
+      return sum + digits.reduce((innerSum, digit) => innerSum + digit);
+    }
+    return sum + number;
+  }, 0);
+  const mod = (10 - (sumCheckDigits % 10)) % 10;
+  return mod === lastDigit;
 }
 
 /**
@@ -270,8 +298,18 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  let sum = 0;
+  let newNum = num;
+  do {
+    sum = 0;
+    while (newNum > 0) {
+      sum += newNum % 10;
+      newNum = Math.floor(newNum / 10);
+    }
+    newNum = sum;
+  } while (sum > 9);
+  return sum;
 }
 
 /**
